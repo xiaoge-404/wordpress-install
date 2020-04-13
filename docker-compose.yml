@@ -1,0 +1,60 @@
+version: '3.7'
+services:
+
+  mysql:
+    image: mysql:latest
+    networks:
+      - wordpress
+    container_name: wp-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "Wordpress123."
+    volumes:
+      - "db_conf:/etc/mysql/conf.d"
+      - "db_data:/var/lib/mysql"
+      
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php-gd:7.4-fpm-alpine
+    networks:
+      - wordpress
+    container_name: wp-php
+    # 为什么要用user 0.0 ? 因为我把php镜像中的php改成以www用户启动,然后0.0 是linux中的root用户,这样,php就有完整的权限修改创建删除文件
+    user: "0:0"
+    depends_on:
+      - mysql
+    volumes:
+      - "www:/wordpress"
+      
+  nginx:
+    image: nginx:1.17.9-alpine 
+    networks:
+      - wordpress
+    container_name: wp-nginx
+    depends_on:
+      - mysql
+      - php
+    ports:
+      - "80:80"
+    volumes:
+      - "nginx_conf:/etc/nginx/conf.d"
+      - "www:/wordpress" 
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    networks:
+      - wordpress
+    ports:
+      - 8080:8080
+
+networks:
+  wordpress:
+
+volumes:
+  db_conf:
+  nginx_conf:
+  db_data:
+  www:
