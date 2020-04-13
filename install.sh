@@ -30,11 +30,11 @@ pre_check(){
     	echo "ping dl-cdn.alpinelinux.org 耗时$(($stop-$start))s,延迟较大,下载有可能失败!"
     fi
     if [[ ! -f /etc/redhat-release ]];then
-    	echo -e "\033[31m暂不支持CentOS系列以外的系统...\033[0m"
-    	exit 1
-	fi
-	if [[ -d $NG_CONF_DIR ]];then echo "$NG_CONF_DIR已经存在,请检查或者删除后再此尝试...";exit 2;fi
-	if [[ -d $NG_WP_DIR ]];then echo "$NG_WP_DIR已经存在,请检查或者删除后再此尝试...";exit 3;fi
+        echo -e "\033[31m暂不支持CentOS系列以外的系统...\033[0m"
+        exit 1
+    fi
+    if [[ -d $NG_CONF_DIR ]];then echo "$NG_CONF_DIR已经存在,请检查或者删除后再此尝试...";exit 2;fi
+    if [[ -d $NG_WP_DIR ]];then echo "$NG_WP_DIR已经存在,请检查或者删除后再此尝试...";exit 3;fi
 }
 
 docker_install() {
@@ -80,10 +80,10 @@ EOF
 }
 
 download_wordpress(){
-	if [[ -f $(ls wordpress*.tar.gz 2>/dev/null) ]];then
-		echo "当前目录已经存在wordpress源码包.."
+    if [[ -f $(ls wordpress*.tar.gz 2>/dev/null) ]];then
+	echo "当前目录已经存在wordpress源码包.."
         return
-	fi
+    fi
     VERSION=$(curl -s https://cn.wordpress.org/download/releases/ \
         |grep -o "\"https://cn.wordpress.org/wordpress-.*-zh_CN.tar.gz\"" \
         |awk -F '-' '{print $2}' \
@@ -94,19 +94,22 @@ download_wordpress(){
     echo "准备下载wordpress-${VERSION}-zh_CN.tar.gz..."
     wget https://cn.wordpress.org/wordpress-${VERSION}-zh_CN.tar.gz
     if [[ $? != 0 ]];then
-    	echo -e "\033[34m网络故障,无法下载...\033[0m"
-    	echo -e "\033[33m请手动将wordpress-${VERSION}-zh_CN.tar.gz放在当前目录中,然后重新执行...\033[0m]"
-    	exit 8
+    	echo -e "\033[34m网络故障,无法下载,尝试换源下载5.4版本..\033[0m"
+	wget https://github.com/pi-v/wordpress-install/releases/download/v2/wordpress-5.4-zh_CN.tar.gz
+	if [[ $? != 0 ]];then
+	    echo -e "\033[31m依旧下载失败,请手动将wordpress-${VERSION}-zh_CN.tar.gz放在当前目录中,然后重新执行...\033[0m"
+	    exit 2
+	fi
     fi
 }
 
 nginx_ops() {
-	nginx_conf_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_NGINX_CONF}/_data/
+    nginx_conf_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_NGINX_CONF}/_data/
     # 修改nginx配置文件
     rm -f ${nginx_conf_dir}/default.conf
     cp wordpress.conf $nginx_conf_dir
     # 创建软连接
-	ln -s $nginx_conf_dir $NG_CONF_DIR 
+    ln -s $nginx_conf_dir $NG_CONF_DIR 
 }
 
 php_check() {
@@ -124,12 +127,12 @@ php_check() {
 }
 
 wordpress_ops() {
-	wp_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_WWW}/_data/
+    wp_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_WWW}/_data/
     # 部署wordpress到docker站点目录中
     tar xf wordpress*.tar.gz
     mv wordpress/* $wp_dir
     # 创建软连接
-	ln -s $wp_dir $NG_WP_DIR
+    ln -s $wp_dir $NG_WP_DIR
 }
 
 out_message() {
