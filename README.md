@@ -2,11 +2,19 @@
 使用脚本一键安装docker环境,部署wordpress最新版博客程序!
 
 ## 快速安装方式
+#### 安装方法一:
 ```sh
 curl -s https://pi-v.github.io/sh/wordpress_quick_install.html|bash
 ```
-使用香港云服务器测试,5分钟配置好wordpress网站,非常适合懒人使用
+#### 安装方法二:
+```sh
+git clone https://github.com/pi-v/wordpress-install.git
+cd wordpress-install
+./install.sh
+```
 
+使用香港云服务器测试,5分钟配置好wordpress网站,非常适合懒人使用
+#### 镜像介绍
 默认mysql为8.0版本,root密码为`Word press123.`
 
 mysql的配置文件使用的docker volume 方式而不是直接挂在目录
