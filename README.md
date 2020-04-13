@@ -27,6 +27,6 @@ mysql:
 php环境使用以 php:7.4-fpm-alpine为基础 
 添加 gd gettext mysqli这三个扩展,用于wordpress程序的mysql链接和图片处理
 更多扩展添加需求修改Dockerfile文件,增加所需要的扩展即可
-可以直接添加的扩展,请看:[php官方镜像扩展安装工具] :https://hub.docker.com/r/mlocati/php-extension-installer 
+可以直接添加的扩展,请看:[php官方镜像扩展安装工具](https://hub.docker.com/r/mlocati/php-extension-installer)
 
 nginx配置仅供参考,根据自己需求进行修改
