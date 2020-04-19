@@ -66,6 +66,7 @@ EOF
         if_error "docker重启失败,请排查原因..."
     fi
     if [[ $(which docker-compose) != /usr/local/bin/docker-compose  ]];then
+        cd ~
         # 安装docker-compose
         wget https://github.com/docker/compose/releases/download/1.25.5/docker-compose-Linux-x86_64
         if_error "docker-compose下载安装失败,请检查网络..."
