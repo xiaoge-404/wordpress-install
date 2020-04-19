@@ -52,6 +52,7 @@ services:
 
 networks:
   wordpress:
+    name: wordpress
 
 volumes:
   db_conf:
