@@ -55,6 +55,10 @@ networks:
 
 volumes:
   db_conf:
+    external: true
   nginx_conf:
+    external: true
   db_data:
+    external: true
   www:
+    external: true
