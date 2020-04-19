@@ -104,7 +104,7 @@ download_wordpress(){
 }
 
 nginx_ops() {
-    nginx_conf_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_NGINX_CONF}/_data/
+    nginx_conf_dir=${D_VOLUME_BASE_DIR}/${D_NGINX_CONF}/_data/
     # 修改nginx配置文件
     rm -f ${nginx_conf_dir}/default.conf
     cp wordpress.conf $nginx_conf_dir
@@ -118,7 +118,7 @@ php_check() {
     # 重启nginx
     docker restart wp-nginx
     # 添加 phpinfo 文件测试
-    echo "<?php phpinfo();?>" >${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_WWW}/_data/phpinfo.php
+    echo "<?php phpinfo();?>" >${D_VOLUME_BASE_DIR}/${D_WWW}/_data/phpinfo.php
     isok=$(curl -s http://127.0.0.1/phpinfo.php|grep -Eo "PHP Version"|wc -l)
     if [[ $isok == 0 ]];then
         echo "php not ok ..."
@@ -127,7 +127,7 @@ php_check() {
 }
 
 wordpress_ops() {
-    wp_dir=${D_VOLUME_BASE_DIR}/${D_NETWORK}_${D_WWW}/_data/
+    wp_dir=${D_VOLUME_BASE_DIR}/${D_WWW}/_data/
     # 部署wordpress到docker站点目录中
     tar xf wordpress*.tar.gz
     mv wordpress/* $wp_dir
